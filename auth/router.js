@@ -1,5 +1,6 @@
 const express = require('express');
 const users = require('../users/model');
+const bcrypt = require('bcryptjs');
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ router.post('/register', async (req, res) => {
         }
         else {
             try {
+                user.password = bcrypt.hashSync(user.password, 12);
                 const created = await users.create(user);
                 res.status(201).json(created);
             }
