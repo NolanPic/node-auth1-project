@@ -32,4 +32,27 @@ router.post('/register', async (req, res) => {
     }
 });
 
+router.post('/login', async (req, res) => {
+    
+    const userToLogin = req.body;
+
+    if(!userToLogin.username || !userToLogin.password) {
+        res.status(400).json({ error: 'Username and password are required' });
+    }
+
+    const userRecord = await users.getByUsername(userToLogin.username);
+
+    if(!userRecord) {
+        res.status(400).json({ error: 'User does not exist' })
+    }
+    else {
+        if(bcrypt.compareSync(userToLogin.password, userRecord.password)) {
+            res.status(200).json({ message: 'User logged in', user_id: userRecord.id })
+        }
+        else {
+            res.status(401).json({ error: 'Invalid credentials' })
+        }
+    }
+});
+
 module.exports = router;
