@@ -47,6 +47,8 @@ router.post('/login', async (req, res) => {
     }
     else {
         if(bcrypt.compareSync(userToLogin.password, userRecord.password)) {
+            req.session.loggedIn = true;
+            req.session.userId = userRecord.id;
             res.status(200).json({ message: 'User logged in', user_id: userRecord.id })
         }
         else {
